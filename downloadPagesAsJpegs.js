@@ -6,7 +6,7 @@ function downloadPages(from, to) {
         pageCanvas.toBlob(
             blob => {
                 const anchor = document.createElement('a');
-                anchor.download = 'page_' + pageNo + '.png';
+                anchor.download = 'page_' + pageNo + '.jpg';
                 anchor.href = URL.createObjectURL(blob);
                 anchor.click();
                 URL.revokeObjectURL(anchor.href);
