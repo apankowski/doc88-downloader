@@ -25,3 +25,30 @@ The download procedure is a bit of a PITA, but hey… it's a POC.
  1. Make sure all desired pages were downloaded correctly.
 
 That's it!
+
+## Converting downloaded images back to a PDF
+
+Under Linux you can easily convert downloaded images back to a PDF.
+You will need ImageMagick package first:
+
+```shell script
+sudo apt-get install imagemagick
+```
+
+Then — in directory in which the images are — issue the following command which will produce `output.pdf` PDF file from the images:
+
+```shell script
+convert $(ls -1v *.jpg *.png 2>/dev/null | tr '\n' ' ') output.pdf
+```
+
+If you further want to OCR the PDF (recognize the text in it and make it searchable), install the OCRmyPDF package:
+
+```shell script
+sudo apt-get install ocrmypdf
+```
+
+Then — in directory in which the PDF is — issue the following command which will perform text recognition in the `output.pdf` PDF and make it searchable:
+
+```shell script
+ocrmypdf output.pdf output.pdf
+```
