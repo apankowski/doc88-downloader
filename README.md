@@ -52,3 +52,38 @@ Then — in directory in which the PDF is — issue the following command which 
 ```shell script
 ocrmypdf output.pdf output.pdf
 ```
+
+just loop click nextPageButton ~~
+
+```
+var pageArea = document.getElementById("pageNumInput").parentNode;
+var page = parseInt(pageArea.innerText.replaceAll(" ", "").replace("/", ""));
+var offset = 0;
+var interval = 800;
+var prePageButton = document.getElementById("prePageButton");
+var nextPageButton = document.getElementById("nextPageButton");
+function ScrollPage() {
+    setTimeout(function () {
+        nextPageButton.click();
+        offset += 1;
+        if (offset < page) {
+            ScrollPage();
+        }
+    }, interval);
+}
+ScrollPage();
+```
+
+To get the best quality, you can compress code to one line and add javascript:to the code start.
+
+Like this:
+
+```
+javascript:var pageArea=document.getElementById("pageNumInput").parentNode;var page=parseInt(pageArea.innerText.replaceAll(" ","").replace("/",""));var offset=0;var interval=800;var prePageButton=document.getElementById("prePageButton");var nextPageButton=document.getElementById("nextPageButton");function ScrollPage(){setTimeout(function(){nextPageButton.click();offset+=1;if(offset<page){ScrollPage()}},interval)}ScrollPage();
+Then add code to your bookmark, reload page and click the bookmark.
+```
+
+Auto-download work!
+
+!Note: Change the scroll interval through your network quality.
+author: xhlove
