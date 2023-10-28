@@ -44,8 +44,8 @@ echo "Converting images to PDF..."
 convert $(ls -1v *.jpg *.png 2>/dev/null | tr '\n' ' ') "$ouput_pdf"
 
 if command -v ocrmypdf &>/dev/null; then
-    echo "OCRing PDF..."
-    ocrmypdf "$ouput_pdf" "$ouput_pdf"
+  echo "OCRing PDF..."
+  ocrmypdf "$ouput_pdf" "$ouput_pdf"
 fi
 
 echo "Generated PDF for '$ouput_pdf' in the directory '$target_directory'."
