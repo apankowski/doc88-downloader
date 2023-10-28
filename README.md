@@ -47,28 +47,19 @@ batchDownload(numPages, format, interval);
 ## Converting downloaded images back to a PDF
 
 Under Linux you can easily convert downloaded images back to a PDF.
-You will need ImageMagick package first:
 
-```shell script
-sudo apt-get install imagemagick
-```
+To do that:
 
-Then — in directory in which the images are — issue the following command which will produce `output.pdf` PDF file from the images:
+1. Install ImageMagick package:
+    ```shell
+    sudo apt-get install imagemagick
+    ```
+2. If you want the PDF to be OCRed (recognize the text in it and make it searchable), install the OCRmyPDF package:
+    ```shell
+    sudo apt-get install ocrmypdf
+    ```
+3. Use the [convert-images-to-pdf.sh](convert-images-to-pdf.sh) script to convert downloaded images back to a PDF. Run it with `-h` argument for help.
 
-```shell script
-convert $(ls -1v *.jpg *.png 2>/dev/null | tr '\n' ' ') output.pdf
-```
+### Troubleshooting
 
-If you further want to OCR the PDF (recognize the text in it and make it searchable), install the OCRmyPDF package:
-
-```shell script
-sudo apt-get install ocrmypdf
-```
-
-Then — in directory in which the PDF is — issue the following command which will perform text recognition in the `output.pdf` PDF and make it searchable:
-
-```shell script
-ocrmypdf output.pdf output.pdf
-```
-
-You can use [this script](/generate_pdf_from_images.sh) to generate the PDF and OCR it, in case the command is installed
+If you see errors from ImageMagick with the message "attempt to perform an operation not allowed by the security policy 'PDF'", see [this StackOverflow question](https://stackoverflow.com/q/52998331/1820695) and answers for a likely quick fix.
