@@ -26,6 +26,26 @@ The download procedure is a bit of a PITA, but hey… it's a POC.
 
 That's it!
 
+## Bulk download
+
+You can bulk download all the pages without the browser block to this behavior by running [this JavaScript](/batchDownloadAll.js) in Console and confirming with <kbd>Enter</kbd>. It downloads all the images in 10 page blocks waiting for a timeout so the Browser does not block this operation.
+
+Download pages in batches. Type:
+
+```javascript
+  const numPages = 100; // Your number of pages
+  batchDownload(numPages);
+```
+
+You can also specify the images format and the desired wait interval between downloads:
+
+```javascript
+  const numPages = 100; // Your number of pages
+  const format = 'jpeg'; // JPEG image format
+  const interval = 1000; // 1000 milliseconds
+  batchDownload(numPages, format, interval);
+```
+
 ## Converting downloaded images back to a PDF
 
 Under Linux you can easily convert downloaded images back to a PDF.
@@ -52,3 +72,5 @@ Then — in directory in which the PDF is — issue the following command which 
 ```shell script
 ocrmypdf output.pdf output.pdf
 ```
+
+You can use [this script](/generate_pdf_from_images.sh) to generate the PDF and OCR it, in case the command is installed
