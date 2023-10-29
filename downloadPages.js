@@ -35,18 +35,19 @@ function waitUntilPageIsLoaded(pageNo, pageCanvas, resolve){
   }
 }
 
-async function preloadPage(pageNo) {
+async function preloadPage(pageNo, pageCanvas) {
   console.log("Preloading page #" + pageNo)
-  const pageCanvas = getPageCanvas(pageNo)
   pageCanvas.scrollIntoView()
   return new Promise((resolve) => waitUntilPageIsLoaded(pageNo, pageCanvas, resolve))
 }
 
+// Keep for debugging purposes
 async function preloadAllPages() {
   revealAllPagePlaceholders()
   const pageCount = getPageCount()
   for (let pageNo = 1; pageNo <= pageCount; pageNo++) {
-    await preloadPage(pageNo)
+    const pageCanvas = getPageCanvas(pageNo)
+    await preloadPage(pageNo, pageCanvas)
   }
   console.log("Finished preloading pages")
 }
@@ -89,13 +90,21 @@ function downloadCanvasAsImage(canvas, imageName, imageFormat) {
   )
 }
 
-function downloadPages(from, to, options = {}) {
-  const imageFormat = imageFormatFor(options)
+async function downloadPages(options = {}) {
+  revealAllPagePlaceholders()
 
-  for (let pageNo = from; pageNo <= to; pageNo++) {
+  const imageFormat = imageFormatFor(options)
+  const { fromPage = 1, toPage = getPageCount() } = options
+
+  for (let pageNo = fromPage; pageNo <= toPage; pageNo++) {
     const pageCanvas = getPageCanvas(pageNo)
-    if (pageCanvas === null) break
+    if (!pageCanvas) break; // Exit early if page number is out of range
+
     const imageName = imageNameFor(pageNo, options)
-    downloadCanvasAsImage(pageCanvas, imageName, imageFormat)
+    await preloadPage(pageNo, pageCanvas).then(() => {
+      downloadCanvasAsImage(pageCanvas, imageName, imageFormat)
+      console.log("Downloaded page #" + pageNo)
+    })
   }
+  console.log("Finished downloading pages " + fromPage + "-" + toPage)
 }
