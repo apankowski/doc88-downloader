@@ -11,22 +11,34 @@ The download procedure is a bit of a PITA, but hey… it's a POC.
 3. Scroll through all the pages in the document, one by one, and make sure all of them have loaded. Depending on the document this might be the most arduous part of the process.
 4. Open Developer Tools (e.g. press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd>).
 5. Switch to JavaScript Console.
-6. For PNGs paste [this JavaScript](/downloadPagesAsPngs.js) in Console and confirm with <kbd>Enter</kbd>.
-7. For JPEGs paste [this JavaScript](/downloadPagesAsJpegs.js) in Console and confirm with <kbd>Enter</kbd>.
-8. Download pages in batches. Type:
+6. Paste [this JavaScript](downloadPages.js) in Console and confirm with <kbd>Enter</kbd>.
+7. Download pages in batches. Type:
    ```javascript
    downloadPages(1, 10)
    ```
    in Console and hit <kbd>Enter</kbd> to download pages 1 through 10.
     * ℹ It is advised to download 10 pages at a time. After saving a batch of pages simply enter `downloadPages(11, 20)` to download pages 11 through 20, and so on.
-    * ℹ In case of Chrome, the first time you download a batch of pages you may see a popup stating that "This site is attempting to download multiple files". You have to allow it as each page is downloaded as a separate file.
-9. Make sure all desired pages were downloaded correctly.
+    * ℹ In case of Chrome, the first time you download a batch of pages you may see a popup stating that "This site is attempting to download multiple files". You have to allow it as each PDF page is downloaded as a separate file.
+    * See [options](#options) section below for options.
+8. Make sure all desired pages were downloaded correctly.
 
-That's it!
+### Options
+
+`downloadPages` function takes options object as the 3rd optional argument, e.g.:
+
+```javascript
+downloadPages(1, 10, {quality: 0.8, imageNamePrefix: 'temp_'})
+```
+
+Possible options:
+
+1. `format` – downloaded image format; string; either `'jpg'` or `'png'`; default is `'jpg'`
+2. `quality` – quality of images; applicable when `format` is `'jpg'`; number between `0` and `1`; default is `0.9`
+3. `imageNamePrefix` – prefix for names of downloaded images; string; default is `'page'` (resulting in downloaded file names e.g.: `page001.jpg`, `page002.jpg`, etc. assuming `format` is `'jpg'`)
 
 ## Bulk download
 
-You can bulk download all the pages without the browser block to this behavior by running [this JavaScript](/batchDownloadAll.js) in Console and confirming with <kbd>Enter</kbd>. It downloads all the images in 10 page blocks waiting for a timeout so the Browser does not block this operation.
+You can bulk download all the pages without the browser block to this behavior by running [this JavaScript](batchDownloadAll.js) in Console and confirming with <kbd>Enter</kbd>. It downloads all the images in 10 page blocks waiting for a timeout so the Browser does not block this operation.
 
 Download pages in batches. Type:
 
