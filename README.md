@@ -34,6 +34,12 @@ Possible options:
 4. `quality` – quality of images; applicable when `format` is `'jpg'`; number between `0` and `1`; default is `0.9`
 5. `imageNamePrefix` – prefix for names of downloaded images; string; default is `'page'` (resulting in downloaded file names e.g.: `page001.jpg`, `page002.jpg`, etc. assuming `format` is `'jpg'`)
 
+### Bookmark
+
+Create a browser bookmark pasting content of [this file](bookmark.min.js) (exactly as it is) in the URL field.
+
+From now on, clicking it on a document page will download all pages as JPEGs.
+
 ## Converting downloaded images back to a PDF
 
 Under Linux you can easily convert downloaded images back to a PDF.
@@ -51,3 +57,7 @@ Under Linux you can easily convert downloaded images back to a PDF.
 ### Troubleshooting
 
 If you see errors from ImageMagick with the message "attempt to perform an operation not allowed by the security policy 'PDF'", see [this StackOverflow question](https://stackoverflow.com/q/52998331/1820695) and answers for a likely quick fix.
+
+## Developing
+
+1. Run `build-bookmark.sh` to update minified bookmark code in `bookmark.min.js`.
