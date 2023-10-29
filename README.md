@@ -8,10 +8,14 @@ The download procedure is a bit of a PITA, but hey… it's a POC.
 
 1. Navigate to the desired document in your browser.
 2. Make sure browser's zoom level is set to 100% — based on some tests it seems that zoom levels lower than 100% can result in lower quality of captured pages.
-3. Scroll through all the pages in the document, one by one, and make sure all of them have loaded. Depending on the document this might be the most arduous part of the process.
-4. Open Developer Tools (e.g. press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd>).
-5. Switch to JavaScript Console.
-6. Paste [this JavaScript](downloadPages.js) in Console and confirm with <kbd>Enter</kbd>.
+3. Open Developer Tools (e.g. press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd>).
+4. Switch to JavaScript Console.
+5. Paste [this JavaScript](downloadPages.js) in Console and confirm with <kbd>Enter</kbd>.
+6. Load all PDF pages. Type:
+    ```javascript
+    preloadAllPages()
+    ```
+   in Console and hit <kbd>Enter</kbd>. Wait until the process ends, printing `Finished preloading pages` in the Console.
 7. Download pages in batches. Type:
    ```javascript
    downloadPages(1, 10)
