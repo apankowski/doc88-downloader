@@ -11,7 +11,7 @@ The download procedure is a bit of a PITA, but hey… it's a POC.
 3. Open Developer Tools (e.g. press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd>).
 4. Switch to JavaScript Console.
 5. Paste [this JavaScript](downloadPages.js) in Console and confirm with <kbd>Enter</kbd>.
-6. Load all PDF pages. Type:
+6. Preload all pages. Type:
     ```javascript
     preloadAllPages()
     ```
