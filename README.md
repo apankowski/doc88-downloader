@@ -34,7 +34,7 @@ Don't interact with the page during the process until it finishes.
 
 #### Options
 
-`downloadPages` function takes options object as the 3rd optional argument, e.g.:
+`downloadPages` function takes an optional options object:
 
 ```javascript
 downloadPages({fromPage: 2, toPage: 10, quality: 0.8, imageNamePrefix: 'temp_'})
