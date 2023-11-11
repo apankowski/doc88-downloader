@@ -37,7 +37,7 @@ function waitUntilPageIsLoaded(pageNo, pageCanvas, resolve) {
 async function preloadPage(pageNo, pageCanvas) {
   console.log("Preloading page #" + pageNo)
   pageCanvas.scrollIntoView()
-  return new Promise((resolve) => waitUntilPageIsLoaded(pageNo, pageCanvas, resolve))
+  return new Promise(resolve => waitUntilPageIsLoaded(pageNo, pageCanvas, resolve))
 }
 
 // Keep for debugging purposes
