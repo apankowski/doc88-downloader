@@ -19,6 +19,7 @@ function revealAllPagePlaceholders() {
   for (let pageNo = 1; pageNo <= pageCount; pageNo++) {
     if (!getPageCanvas(pageNo)) throw new Error(`Couldn't find page canvas for page #${pageNo}`)
   }
+
   console.log('Revealed all page placeholders')
 }
 
@@ -40,11 +41,13 @@ async function preloadPage(pageNo, pageCanvas) {
 // Keep for debugging purposes
 async function preloadAllPages() {
   revealAllPagePlaceholders()
+
   const pageCount = getPageCount()
   for (let pageNo = 1; pageNo <= pageCount; pageNo++) {
     const pageCanvas = getPageCanvas(pageNo)
     await preloadPage(pageNo, pageCanvas)
   }
+
   console.log('Finished preloading pages')
 }
 
@@ -97,10 +100,12 @@ async function downloadPages(options = {}) {
     if (!pageCanvas) break // Exit early if page number is out of range
 
     const imageName = imageNameFor(pageNo, options)
+
     await preloadPage(pageNo, pageCanvas).then(() => {
       downloadCanvasAsImage(pageCanvas, imageName, imageFormat)
       console.log(`Downloaded page #${pageNo}`)
     })
   }
+
   console.log(`Finished downloading pages ${fromPage}-${toPage}`)
 }
