@@ -94,7 +94,7 @@ async function downloadPages(options = {}) {
 
   for (let pageNo = fromPage; pageNo <= toPage; pageNo++) {
     const pageCanvas = getPageCanvas(pageNo)
-    if (!pageCanvas) break; // Exit early if page number is out of range
+    if (!pageCanvas) break // Exit early if page number is out of range
 
     const imageName = imageNameFor(pageNo, options)
     await preloadPage(pageNo, pageCanvas).then(() => {
