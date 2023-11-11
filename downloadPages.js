@@ -4,9 +4,7 @@ function getPageCanvas(pageNo) {
 
 function getPageCount() {
   const pageNumInput = document.getElementById('pageNumInput')
-  if (!pageNumInput) {
-    throw new Error("Couldn't find element containing total page count")
-  }
+  if (!pageNumInput) throw new Error("Couldn't find element containing total page count")
   return parseInt(pageNumInput.parentNode.innerText.replaceAll(' ', '').replaceAll('/', ''))
 }
 
@@ -26,11 +24,10 @@ function revealAllPagePlaceholders() {
 
 function waitUntilPageIsLoaded(pageNo, pageCanvas, resolve) {
   const isLoaded = pageCanvas.getAttribute("lz") === "1"
-  if (isLoaded) {
+  if (!isLoaded) setTimeout(() => waitUntilPageIsLoaded(pageNo, pageCanvas, resolve), 100)
+  else {
     console.log("Loaded page #" + pageNo)
     resolve()
-  } else {
-    setTimeout(() => waitUntilPageIsLoaded(pageNo, pageCanvas, resolve), 100)
   }
 }
 
