@@ -24,13 +24,12 @@ function revealAllPagePlaceholders() {
   console.log("Revealed all page placeholders")
 }
 
-function waitUntilPageIsLoaded(pageNo, pageCanvas, resolve){
+function waitUntilPageIsLoaded(pageNo, pageCanvas, resolve) {
   const isLoaded = pageCanvas.getAttribute("lz") === "1"
   if (isLoaded) {
     console.log("Loaded page #" + pageNo)
     resolve()
-  }
-  else {
+  } else {
     setTimeout(() => waitUntilPageIsLoaded(pageNo, pageCanvas, resolve), 100)
   }
 }
@@ -52,11 +51,11 @@ async function preloadAllPages() {
   console.log("Finished preloading pages")
 }
 
-function imageNameFor(pageNo, {imageNamePrefix = 'page'}) {
+function imageNameFor(pageNo, { imageNamePrefix = 'page' }) {
   return imageNamePrefix + pageNo.toString().padStart(3, "0")
 }
 
-function imageFormatFor({format = 'jpg', quality = 0.9}) {
+function imageFormatFor({ format = 'jpg', quality = 0.9 }) {
   switch (format.toLowerCase()) {
     case 'jpg':
     case 'jpeg':
@@ -76,7 +75,7 @@ function imageFormatFor({format = 'jpg', quality = 0.9}) {
 }
 
 function downloadCanvasAsImage(canvas, imageName, imageFormat) {
-  const {mimeType, extension, quality} = imageFormat
+  const { mimeType, extension, quality } = imageFormat
   canvas.toBlob(
     blob => {
       const anchor = document.createElement('a')
