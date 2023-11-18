@@ -14,6 +14,8 @@ From now on, clicking it on a document page will download all pages as JPEGs.
 
 Don't interact with the page during the process until it finishes.
 
+⚠️ In case of Chrome, the first time you download pages you may see a popup stating that "This site is attempting to download multiple files". You have to allow it as each page is downloaded as a separate file.
+
 ### Option B: Manual (finer control over the process)
 
 1. Navigate to the desired document in your browser.
@@ -26,8 +28,9 @@ Don't interact with the page during the process until it finishes.
     downloadPages()
     ```
    This will download all the pages.  
-   Pages will be automatically preloaded and saved one by one.  
-   See [options](#options) section below for options.
+   Pages will be automatically preloaded and saved one by one.
+    * ℹ️ See [options](#options) section below for options.  
+    * ⚠️ In case of Chrome, the first time you download pages you may see a popup stating that "This site is attempting to download multiple files". You have to allow it as each page is downloaded as a separate file.
 7. Don't interact with the page during the process.   
    Wait until it ends, printing `Finished downloading pages` in the Console.  
    Make sure all desired pages were downloaded correctly.
