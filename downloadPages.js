@@ -1,3 +1,7 @@
+var script = document.createElement("script")
+script.src = "https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"
+document.head.appendChild(script)
+
 function getPageCanvas(pageNo) {
   return document.getElementById(`page_${pageNo}`)
 }
@@ -106,6 +110,49 @@ async function downloadPages(options = {}) {
       console.log(`Downloaded page #${pageNo}`)
     })
   }
+
+  console.log(`Finished downloading pages ${fromPage}-${toPage}`)
+}
+
+async function downloadPagesZip(options = { quality: 1.0, format: 'png' }) {
+  revealAllPagePlaceholders()
+
+  const imageFormat = imageFormatFor(options)
+  const { fromPage = 1, toPage = getPageCount() } = options
+
+  const zip = new JSZip()
+
+  for (let pageNo = fromPage; pageNo <= toPage; pageNo++) {
+    const pageCanvas = getPageCanvas(pageNo)
+    if (!pageCanvas) break // Exit early if page number is out of range
+
+    const imageName = imageNameFor(pageNo, options)
+
+    await preloadPage(pageNo, pageCanvas).then(() => {
+      pageCanvas.toBlob(
+        (blob) => {
+          const reader = new FileReader()
+          reader.onloadend = function () {
+            const base64data = reader.result
+            zip.file(imageName + imageFormat.extension, base64data.split(",")[1], { base64: true,  compression: "STORE" })
+            console.log(`Added page #${pageNo} to zip`)
+          }
+          reader.readAsDataURL(blob)
+        },
+        imageFormat.mimeType,
+        imageFormat.quality
+      )
+    })
+  }
+
+  zip.generateAsync({ type: "blob", compression: "STORE" }).then(function (content) {
+    const title = document.querySelector("h1")?.title || "pages";
+    const anchor = document.createElement("a")
+    anchor.download = title + ".zip"
+    anchor.href = URL.createObjectURL(content)
+    anchor.click()
+    URL.revokeObjectURL(anchor.href)
+  })
 
   console.log(`Finished downloading pages ${fromPage}-${toPage}`)
 }

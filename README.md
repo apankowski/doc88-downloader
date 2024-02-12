@@ -10,9 +10,9 @@ Then, having pages saved as images, a searchable PDF can be reconstructed from t
 
 Create a browser bookmark pasting content of [this file](bookmark.min.js) (exactly as it is) in the URL field.
 
-From now on, clicking it on a document page will download all pages as JPEGs.
+From now on, clicking it on a document page will download all pages as PNG images in a single ZIP file.
 
-Don't interact with the page during the process until it finishes.
+Don't interact with the page during the process until it finishes. Be patient for documents with many pages e.g 100+, it may take a while.
 
 ⚠️ In case of Chrome, the first time you download pages you may see a popup stating that "This site is attempting to download multiple files". You have to allow it as each page is downloaded as a separate file.
 
@@ -23,12 +23,9 @@ Don't interact with the page during the process until it finishes.
 3. Open Developer Tools (e.g. press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd>).
 4. Switch to JavaScript Console.
 5. Paste [this JavaScript](downloadPages.js) in Console and confirm with <kbd>Enter</kbd>.
-6. Type the following in Console and hit <kbd>Enter</kbd>:
-    ```javascript
-    downloadPages()
-    ```
-   This will download all the pages.  
-   Pages will be automatically preloaded and saved one by one.
+6. There are two options for downloading. Choose one only.
+   - Option 1: Single zip file of PNG images - Type `downloadPagesZip()` in Console and hit <kbd>Enter</kbd>.
+   - Option 2: Individual files - Type `downloadPages()` in Console and hit <kbd>Enter</kbd>. This will download all the pages. Pages will be automatically preloaded and saved one by one.
     * ℹ️ See [options](#options) section below for options.  
     * ⚠️ In case of Chrome, the first time you download pages you may see a popup stating that "This site is attempting to download multiple files". You have to allow it as each page is downloaded as a separate file.
 7. Don't interact with the page during the process.   
