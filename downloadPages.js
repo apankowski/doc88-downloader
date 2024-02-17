@@ -96,11 +96,25 @@ function downloadBlob(blob, filename) {
   URL.revokeObjectURL(anchor.href)
 }
 
-async function downloadPages(options = {}) {
-  revealAllPagePlaceholders()
+function pageImageHandlerFor({}) {
+  return {
+    initialize: async () => {},
+    handlePageImage: async (pageNo, imageBlob, imageFilename) => {
+      downloadBlob(imageBlob, imageFilename)
+      console.log(`Downloaded page #${pageNo}`)
+    },
+    finalize: async () => {},
+  }
+}
 
+async function downloadPages(options = {}) {
   const imageFormat = imageFormatFor(options)
+  const pageImageHandler = pageImageHandlerFor(options)
+
+  revealAllPagePlaceholders()
   const { fromPage = 1, toPage = getPageCount() } = options
+
+  await pageImageHandler.initialize()
 
   for (let pageNo = fromPage; pageNo <= toPage; pageNo++) {
     const pageCanvas = getPageCanvas(pageNo)
@@ -111,9 +125,9 @@ async function downloadPages(options = {}) {
     await preloadPage(pageNo, pageCanvas)
     let imageBlob = await captureAsImageBlob(pageCanvas, imageFormat)
 
-    downloadBlob(imageBlob, imageFilename)
-    console.log(`Downloaded page #${pageNo}`)
+    await pageImageHandler.handlePageImage(pageNo, imageBlob, imageFilename)
   }
 
+  await pageImageHandler.finalize()
   console.log(`Finished downloading pages ${fromPage}-${toPage}`)
 }
