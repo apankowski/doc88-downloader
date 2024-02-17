@@ -51,10 +51,6 @@ async function preloadAllPages() {
   console.log('Finished preloading pages')
 }
 
-function imageNameFor(pageNo, { imageNamePrefix = 'page' }) {
-  return imageNamePrefix + pageNo.toString().padStart(3, '0')
-}
-
 function imageFormatFor({ format = 'jpg', quality = 0.9 }) {
   switch (format.toLowerCase()) {
     case 'jpg':
@@ -74,38 +70,64 @@ function imageFormatFor({ format = 'jpg', quality = 0.9 }) {
   }
 }
 
-function downloadCanvasAsImage(canvas, imageName, imageFormat) {
-  const { mimeType, extension, quality } = imageFormat
-  canvas.toBlob(
-    blob => {
-      const anchor = document.createElement('a')
-      anchor.download = imageName + extension
-      anchor.href = URL.createObjectURL(blob)
-      anchor.click()
-      URL.revokeObjectURL(anchor.href)
+function imageFilenameFor(pageNo, { imageNamePrefix = 'page' }, { extension }) {
+  return imageNamePrefix + pageNo.toString().padStart(3, '0') + extension
+}
+
+async function captureAsImageBlob(canvas, imageFormat) {
+  const { mimeType, quality } = imageFormat
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(
+      (blob) => {
+        if (blob !== null) resolve(blob)
+        else reject(new Error('Failed to capture canvas as image blob'))
+      },
+      mimeType,
+      quality,
+    )
+  })
+}
+
+function downloadBlob(blob, filename) {
+  const anchor = document.createElement('a')
+  anchor.download = filename
+  anchor.href = URL.createObjectURL(blob)
+  anchor.click()
+  URL.revokeObjectURL(anchor.href)
+}
+
+function pageImageHandlerFor({}) {
+  return {
+    initialize: async () => {},
+    handlePageImage: async (pageNo, imageBlob, imageFilename) => {
+      downloadBlob(imageBlob, imageFilename)
+      console.log(`Downloaded page #${pageNo}`)
     },
-    mimeType,
-    quality,
-  )
+    finalize: async () => {},
+  }
 }
 
 async function downloadPages(options = {}) {
-  revealAllPagePlaceholders()
-
   const imageFormat = imageFormatFor(options)
+  const pageImageHandler = pageImageHandlerFor(options)
+
+  revealAllPagePlaceholders()
   const { fromPage = 1, toPage = getPageCount() } = options
+
+  await pageImageHandler.initialize()
 
   for (let pageNo = fromPage; pageNo <= toPage; pageNo++) {
     const pageCanvas = getPageCanvas(pageNo)
     if (!pageCanvas) break // Exit early if page number is out of range
 
-    const imageName = imageNameFor(pageNo, options)
+    const imageFilename = imageFilenameFor(pageNo, options, imageFormat)
 
-    await preloadPage(pageNo, pageCanvas).then(() => {
-      downloadCanvasAsImage(pageCanvas, imageName, imageFormat)
-      console.log(`Downloaded page #${pageNo}`)
-    })
+    await preloadPage(pageNo, pageCanvas)
+    let imageBlob = await captureAsImageBlob(pageCanvas, imageFormat)
+
+    await pageImageHandler.handlePageImage(pageNo, imageBlob, imageFilename)
   }
 
+  await pageImageHandler.finalize()
   console.log(`Finished downloading pages ${fromPage}-${toPage}`)
 }
