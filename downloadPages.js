@@ -96,14 +96,56 @@ function downloadBlob(blob, filename) {
   URL.revokeObjectURL(anchor.href)
 }
 
-function pageImageHandlerFor({}) {
-  return {
-    initialize: async () => {},
-    handlePageImage: async (pageNo, imageBlob, imageFilename) => {
-      downloadBlob(imageBlob, imageFilename)
-      console.log(`Downloaded page #${pageNo}`)
-    },
-    finalize: async () => {},
+function getDocumentTitle() {
+  return document.querySelector('h1')?.title
+    || document.querySelector('meta[property="og:title"]')?.content
+}
+
+async function loadSupportScript(url) {
+  return new Promise((resolve, reject) => {
+    let script = document.createElement('script')
+    script.type = 'text/javascript'
+    script.src = url
+    script.onload = () => resolve()
+    script.onerror = (event) => reject(new Error(`Failed to load support script ${url}: ${event.type}`))
+    document.head.appendChild(script)
+  })
+}
+
+function pageImageHandlerFor({ archive = 'zip' }) {
+  switch (archive) {
+    case 'none':
+      return {
+        initialize: async () => {},
+        handlePageImage: async (pageNo, imageBlob, imageFilename) => {
+          downloadBlob(imageBlob, imageFilename)
+          console.log(`Downloaded page #${pageNo}`)
+        },
+        finalize: async () => {},
+      }
+    case 'zip': {
+      let zip
+      return {
+        initialize: async () => {
+          await loadSupportScript('https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js')
+          zip = new JSZip()
+          console.log('Initialized ZIP archive')
+        },
+        handlePageImage: async (pageNo, imageBlob, imageFilename) => {
+          zip.file(imageFilename, imageBlob, { compression: 'DEFLATE' })
+          console.log(`Added page #${pageNo} to ZIP archive`)
+        },
+        finalize: async () => {
+          const zipFilename = (getDocumentTitle() || 'pages') + '.zip'
+          const zipBlob = await zip.generateAsync({ type: 'blob' })
+          downloadBlob(zipBlob, zipFilename)
+          console.log('Downloaded ZIP archive')
+          zip = null
+        },
+      }
+    }
+    default:
+      throw new Error(`Unknown archive type ${archive}`)
   }
 }
 
@@ -123,7 +165,7 @@ async function downloadPages(options = {}) {
     const imageFilename = imageFilenameFor(pageNo, options, imageFormat)
 
     await preloadPage(pageNo, pageCanvas)
-    let imageBlob = await captureAsImageBlob(pageCanvas, imageFormat)
+    const imageBlob = await captureAsImageBlob(pageCanvas, imageFormat)
 
     await pageImageHandler.handlePageImage(pageNo, imageBlob, imageFilename)
   }

@@ -4,17 +4,19 @@ This is a POC downloader of documents from [doc88.com](https://doc88.com). It sa
 
 Then, having pages saved as images, a searchable PDF can be reconstructed from them.
 
-## Step 1: Save pages as images
+## Step 1: Save pages of a document as images
 
 ### Option A: Bookmark
 
-Create a browser bookmark pasting content of [this file](bookmark.min.js) (exactly as it is) in the URL field.
+Create a browser bookmark, pasting content of [this file](bookmark.min.js) (exactly as it is) in its URL field.
 
-From now on, clicking it on a document page will download all pages as JPEGs.
+From now on, clicking the bookmark on a document page will capture all pages as JPEGs, bundle them in a ZIP archive and download it.
 
-Don't interact with the page during the process until it finishes.
-
-⚠️ In case of Chrome, the first time you download pages you may see a popup stating that "This site is attempting to download multiple files". You have to allow it as each page is downloaded as a separate file.
+> [!IMPORTANT]  
+> Don't interact with the browser during the process.  
+> Be patient, especially with large documents containing hundreds of pages.  
+> You can assess the progress of the process in doc88's page selector (e.g. "17 / 42").  
+> Check that all desired pages were captured correctly.
 
 ### Option B: Manual (finer control over the process)
 
@@ -27,13 +29,17 @@ Don't interact with the page during the process until it finishes.
     ```javascript
     downloadPages()
     ```
-   This will download all the pages.  
-   Pages will be automatically preloaded and saved one by one.
-    * ℹ️ See [options](#options) section below for options.  
-    * ⚠️ In case of Chrome, the first time you download pages you may see a popup stating that "This site is attempting to download multiple files". You have to allow it as each page is downloaded as a separate file.
-7. Don't interact with the page during the process.   
-   Wait until it ends, printing `Finished downloading pages` in the Console.  
-   Make sure all desired pages were downloaded correctly.
+   This will capture and bundle all the pages in a ZIP file.  
+   Pages will be automatically preloaded and captured one by one.
+
+See [options](#options) section below for options.
+
+> [!IMPORTANT]  
+> Don't interact with the browser during the process.  
+> Be patient, especially with large documents containing hundreds of pages.  
+> Wait until it ends, printing `Finished downloading pages` in the Console.  
+> Check that all desired pages were captured correctly.
+
 
 #### Options
 
@@ -50,6 +56,10 @@ Possible options are:
 3. `format` – downloaded image format; string; either `'jpg'` or `'png'`; default is `'jpg'`
 4. `quality` – quality of images; applicable when `format` is `'jpg'`; number between `0` and `1`; default is `0.9`
 5. `imageNamePrefix` – prefix for names of downloaded images; string; default is `'page'` (resulting in downloaded file names e.g.: `page001.jpg`, `page002.jpg`, etc. assuming `format` is `'jpg'`)
+6. `archive` – type of archive to put the captured images in; string; either `'zip'` or `'none'`; default is `'zip'`; `'none'` will result in each image downloaded as a separate file
+
+> [!NOTE]  
+> In case of Chrome, if you set `archive` to `none`, the first time you download pages you may see a popup stating that "This site is attempting to download multiple files". You have to allow it, as with this option each page will be downloaded as a separate file.
 
 ## Step 2: Converting images back to a PDF
 
