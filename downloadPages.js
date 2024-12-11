@@ -8,11 +8,51 @@ function getPageCount() {
   return parseInt(pageNumInput.parentNode.innerText.replaceAll(' ', '').replaceAll('/', ''))
 }
 
-function revealAllPagePlaceholders() {
-  let continueButton
-  while ((continueButton = document.getElementById('continueButton')) != null) {
-    continueButton.click()
-  }
+function waitUntilElementDisappears(element) {
+  console.log('Monitoring', element)
+  return new Promise(resolve => {
+    let handler = (_, observer) => {
+      if (!element.isConnected) {
+        console.log('Disappeared', element)
+        observer.disconnect()
+        resolve()
+      }
+    }
+    let observer = new MutationObserver(handler)
+    observer.observe(document, { childList: true, subtree: true })
+  })
+}
+
+async function revealAllPagePlaceholders() {
+  let recheck
+  do {
+    recheck = false
+
+    let continueButton = document.getElementById('continueButton')
+    if (continueButton != null) {
+      recheck = true
+      console.log('Clicking on found "continue" button')
+      continueButton.click()
+    }
+
+    let captcha = document.getElementById('captcha_reading')
+    if (captcha != null) {
+      recheck = true
+      console.log('Passing control to the user for found captcha')
+      captcha.scrollIntoView()
+      window.alert('Page requires solving captcha - slide the ">>" button to correct position')
+      await waitUntilElementDisappears(captcha)
+    }
+
+    let continuePlaceholder = document.getElementById('continue_page')
+    if (continuePlaceholder != null) {
+      recheck = true
+      console.warn('Pages seem to be protected with unknown mechanism')
+      continuePlaceholder.scrollIntoView()
+      window.alert('Pages seem to be protected with unknown mechanism. Try resolving it manually. Download will resume once the "continue" placeholder disappears.')
+      await waitUntilElementDisappears(continuePlaceholder)
+    }
+  } while (recheck)
 
   // Sanity check: make sure page canvases exist for all expected pages
   const pageCount = getPageCount()
@@ -40,7 +80,7 @@ async function preloadPage(pageNo, pageCanvas) {
 
 // Keep for debugging purposes
 async function preloadAllPages() {
-  revealAllPagePlaceholders()
+  await revealAllPagePlaceholders()
 
   const pageCount = getPageCount()
   for (let pageNo = 1; pageNo <= pageCount; pageNo++) {
@@ -153,7 +193,7 @@ async function downloadPages(options = {}) {
   const imageFormat = imageFormatFor(options)
   const pageImageHandler = pageImageHandlerFor(options)
 
-  revealAllPagePlaceholders()
+  await revealAllPagePlaceholders()
   const { fromPage = 1, toPage = getPageCount() } = options
 
   await pageImageHandler.initialize()
