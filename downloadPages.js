@@ -142,14 +142,15 @@ function getDocumentTitle() {
 }
 
 async function loadSupportScript(url) {
-  return new Promise((resolve, reject) => {
-    let script = document.createElement('script')
-    script.type = 'text/javascript'
-    script.src = url
-    script.onload = () => resolve()
-    script.onerror = (event) => reject(new Error(`Failed to load support script ${url}: ${event.type}`))
-    document.head.appendChild(script)
-  })
+  const response = await fetch(url)
+  if (!response.ok) {
+    throw new Error(`Failed to load support script ${url}: ${response.status} ${response.statusText}`)
+  }
+  const scriptText = await response.text()
+  const script = document.createElement('script')
+  script.type = 'text/javascript'
+  script.textContent = scriptText
+  document.head.appendChild(script)
 }
 
 function pageImageHandlerFor({ archive = 'zip' }) {
