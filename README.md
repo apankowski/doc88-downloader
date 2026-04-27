@@ -1,12 +1,10 @@
 # POC [doc88.com](https://doc88.com) Downloader
 
-This is a POC downloader of documents from [doc88.com](https://doc88.com). It saves pages of a given document as PNGs or JPEGs. It doesn't have any dependencies — it's a bit of JavaScript that you paste into Developer Tools' Console. It was tested in Chrome and Firefox.
+This is a POC downloader of documents from [doc88.com](https://doc88.com). It saves pages of a given document as PNGs or JPEGs. It doesn't have any dependencies — it's a bit of JavaScript that you can paste into Developer Tools' Console or create a Bookmark. It was tested in Chrome and Firefox.
 
 Then, having pages saved as images, a searchable PDF can be reconstructed from them.
 
 ## Step 1: Save pages of a document as images
-
-### Option A: Bookmark
 
 Create a browser bookmark, pasting content of [this file](bookmark.min.js) (exactly as it is) in its URL field.
 
@@ -36,11 +34,3 @@ Under Linux you can easily convert downloaded images back to a PDF.
     ./convert-images-to-pdf.sh image-directory output.pdf
     ```
    Run it with `-h` argument for help.
-
-### Troubleshooting
-
-If you see errors from ImageMagick with the message "attempt to perform an operation not allowed by the security policy 'PDF'", see [this StackOverflow question](https://stackoverflow.com/q/52998331/1820695) and answers for a likely quick fix.
-
-## Developing
-
-1. Run `build-bookmark.sh` to update minified bookmark code in `bookmark.min.js`.
