@@ -18,56 +18,14 @@ From now on, clicking the bookmark on a document page will capture all pages as 
 > You can assess the progress of the process in doc88's page selector (e.g. "17 / 42").  
 > Check that all desired pages were captured correctly.
 
-### Option B: Manual (finer control over the process)
-
-1. Navigate to the desired document in your browser.
-2. Make sure browser's zoom level is set to 100% — based on some tests it seems that zoom levels lower than 100% can result in lower quality of captured pages.
-3. Open Developer Tools (e.g. press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd>).
-4. Switch to JavaScript Console.
-5. Paste [this JavaScript](downloadPages.js) in Console and confirm with <kbd>Enter</kbd>.
-6. Type the following in Console and hit <kbd>Enter</kbd>:
-    ```javascript
-    downloadPages()
-    ```
-   This will capture and bundle all the pages in a ZIP file.  
-   Pages will be automatically preloaded and captured one by one.
-
-See [options](#options) section below for options.
-
-> [!IMPORTANT]  
-> Don't interact with the browser during the process.  
-> Be patient, especially with large documents containing hundreds of pages.  
-> Wait until it ends, printing `Finished downloading pages` in the Console.  
-> Check that all desired pages were captured correctly.
-
-
-#### Options
-
-`downloadPages` function takes an optional options object:
-
-```javascript
-downloadPages({fromPage: 2, toPage: 10, quality: 0.8, imageNamePrefix: 'temp_'})
-```
-
-Possible options are:
-
-1. `fromPage` – first page in range to be downloaded; number; default is `1`
-2. `toPage` – last page in range to be downloaded; number; default is total number of pages in the document
-3. `format` – downloaded image format; string; either `'jpg'` or `'png'`; default is `'jpg'`
-4. `quality` – quality of images; applicable when `format` is `'jpg'`; number between `0` and `1`; default is `0.9`
-5. `imageNamePrefix` – prefix for names of downloaded images; string; default is `'page'` (resulting in downloaded file names e.g.: `page001.jpg`, `page002.jpg`, etc. assuming `format` is `'jpg'`)
-6. `archive` – type of archive to put the captured images in; string; either `'zip'` or `'none'`; default is `'zip'`; `'none'` will result in each image downloaded as a separate file
-
-> [!NOTE]  
-> In case of Chrome, if you set `archive` to `none`, the first time you download pages you may see a popup stating that "This site is attempting to download multiple files". You have to allow it, as with this option each page will be downloaded as a separate file.
 
 ## Step 2: Converting images back to a PDF
 
 Under Linux you can easily convert downloaded images back to a PDF.
 
-1. Install ImageMagick package:
+1. Install img2pdf package :
     ```shell
-    sudo apt-get install imagemagick
+    sudo apt-get install img2pdf
     ```
 2. If you want the PDF to be OCRed (recognize the text in it and make it searchable), install the OCRmyPDF package:
     ```shell
