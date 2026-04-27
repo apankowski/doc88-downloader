@@ -65,9 +65,9 @@ Possible options are:
 
 Under Linux you can easily convert downloaded images back to a PDF.
 
-1. Install ImageMagick package:
+1. Install img2pdf package :
     ```shell
-    sudo apt-get install imagemagick
+    sudo apt-get install img2pdf
     ```
 2. If you want the PDF to be OCRed (recognize the text in it and make it searchable), install the OCRmyPDF package:
     ```shell
@@ -78,10 +78,6 @@ Under Linux you can easily convert downloaded images back to a PDF.
     ./convert-images-to-pdf.sh image-directory output.pdf
     ```
    Run it with `-h` argument for help.
-
-### Troubleshooting
-
-If you see errors from ImageMagick with the message "attempt to perform an operation not allowed by the security policy 'PDF'", see [this StackOverflow question](https://stackoverflow.com/q/52998331/1820695) and answers for a likely quick fix.
 
 ## Developing
 
