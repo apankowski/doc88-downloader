@@ -77,8 +77,15 @@ async function revealAllPagePlaceholders() {
   console.log('Revealed all page placeholders')
 }
 
+// CSS width of pages at the default zoom level; set before zooming in
+let baseCanvasWidth = null
+
 function waitUntilPageIsLoaded(pageNo, pageCanvas, resolve) {
-  const isLoaded = pageCanvas.getAttribute('lz') === '1'
+  // doc88 sets the "lz" attribute of a rendered page to the current zoom factor: "1" at the default zoom
+  // and, after zooming in, the page's CSS width relative to its original width.
+  const lz = parseFloat(pageCanvas.getAttribute('lz'))
+  const expectedZoom = baseCanvasWidth ? parseInt(pageCanvas.style.width) / baseCanvasWidth : 1
+  const isLoaded = !isNaN(lz) && Math.abs(lz - expectedZoom) < 0.05
   if (!isLoaded) setTimeout(() => waitUntilPageIsLoaded(pageNo, pageCanvas, resolve), 100)
   else {
     console.log(`Loaded page #${pageNo}`)
@@ -204,6 +211,27 @@ function pageImageHandlerFor({ archive = 'zip' }) {
   }
 }
 
+// Each doc88 zoom-in step makes pages render at a higher pixel resolution
+// (e.g. 690px -> 925px -> 1152px -> 1387px wide), i.e. a sharper capture.
+async function zoomIn(steps) {
+  if (steps <= 0) return
+  const zoomInButton = document.getElementById('zoomInButton')
+  if (!zoomInButton) {
+    console.warn('Couldn\'t find zoom-in button, capturing at the default resolution')
+    return
+  }
+  const widthBefore = getPageCanvas(1)?.style.width
+  for (let i = 0; i < steps; i++) {
+    zoomInButton.click()
+    await new Promise(resolve => setTimeout(resolve, 1000))
+  }
+  if (getPageCanvas(1)?.style.width === widthBefore) {
+    console.warn('Zoom had no effect on this document, capturing at the default resolution')
+  } else {
+    console.log(`Zoomed in ${steps} step(s)`)
+  }
+}
+
 async function downloadPages(options = {}) {
   try {
     await downloadPagesUnsafe(options)
@@ -219,6 +247,11 @@ async function downloadPagesUnsafe(options = {}) {
   const pageImageHandler = pageImageHandlerFor(options)
 
   await revealAllPagePlaceholders()
+
+  const firstCanvas = getPageCanvas(1)
+  baseCanvasWidth = parseInt(firstCanvas.style.width) / (parseFloat(firstCanvas.getAttribute('lz')) || 1)
+  await zoomIn(options.zoomSteps ?? 0)
+
   const { fromPage = 1, toPage = getPageCount() } = options
 
   await pageImageHandler.initialize()
