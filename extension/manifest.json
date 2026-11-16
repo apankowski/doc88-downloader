@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "doc88 Downloader",
+  "version": "0.5.0",
+  "description": "Saves the pages of a doc88.com document as PNG/JPEG images bundled in a ZIP.",
+  "action": {
+    "default_title": "doc88 Downloader",
+    "default_popup": "popup.html"
+  },
+  "host_permissions": ["https://www.doc88.com/*", "https://doc88.com/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://www.doc88.com/*", "https://doc88.com/*"],
+      "js": ["jszip.min.js", "content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
