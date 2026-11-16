@@ -5,7 +5,16 @@ function getPageCanvas(pageNo) {
 function getPageCount() {
   const pageNumInput = document.getElementById('pageNumInput')
   if (!pageNumInput) throw new Error('Couldn\'t find element containing total page count')
-  return parseInt(pageNumInput.parentNode.innerText.replaceAll(' ', '').replaceAll('/', ''))
+  const parsed = parseInt(pageNumInput.parentNode.innerText.replaceAll(' ', '').replaceAll('/', ''))
+  if (!isNaN(parsed)) return parsed
+  // Fallback: the count may be rendered as words (e.g. "twenty one" when the browser auto-translates the page),
+  // so derive it from the page canvases instead
+  const pageNumbers = [...document.querySelectorAll('canvas')]
+    .map(c => /^page_(\d+)$/.exec(c.id))
+    .filter(Boolean)
+    .map(m => parseInt(m[1]))
+  if (pageNumbers.length === 0) throw new Error('Couldn\'t determine total page count')
+  return Math.max(...pageNumbers)
 }
 
 function waitUntilElementDisappears(element) {
@@ -25,14 +34,19 @@ function waitUntilElementDisappears(element) {
 
 async function revealAllPagePlaceholders() {
   let recheck
+  let continueClicks = 0
   do {
     recheck = false
 
     let continueButton = document.getElementById('continueButton')
     if (continueButton != null) {
+      // The button can stay on the page (e.g. until a captcha is solved). Pause between clicks
+      // instead of spinning synchronously, which freezes the tab.
+      if (++continueClicks > 20) throw new Error('The "continue" button keeps reappearing; click it manually and run again')
       recheck = true
       console.log('Clicking on found "continue" button')
       continueButton.click()
+      await new Promise(resolve => setTimeout(resolve, 1000))
     }
 
     let captcha = document.getElementById('captcha_reading')
@@ -191,6 +205,16 @@ function pageImageHandlerFor({ archive = 'zip' }) {
 }
 
 async function downloadPages(options = {}) {
+  try {
+    await downloadPagesUnsafe(options)
+  } catch (error) {
+    // Errors in a bookmarklet are otherwise invisible
+    console.error(error)
+    window.alert(`doc88 download failed: ${error.message}`)
+  }
+}
+
+async function downloadPagesUnsafe(options = {}) {
   const imageFormat = imageFormatFor(options)
   const pageImageHandler = pageImageHandlerFor(options)
 
