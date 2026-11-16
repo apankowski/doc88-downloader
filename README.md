@@ -57,6 +57,7 @@ Possible options are:
 4. `quality` – quality of images; applicable when `format` is `'jpg'`; number between `0` and `1`; default is `0.9`
 5. `imageNamePrefix` – prefix for names of downloaded images; string; default is `'page'` (resulting in downloaded file names e.g.: `page001.jpg`, `page002.jpg`, etc. assuming `format` is `'jpg'`)
 6. `archive` – type of archive to put the captured images in; string; either `'zip'` or `'none'`; default is `'zip'`; `'none'` will result in each image downloaded as a separate file
+7. `zoomSteps` – how many times to click doc88's zoom-in button before capturing; each step makes doc88 render pages at a higher resolution (e.g. 690px → 925px → 1152px → 1387px wide), giving sharper images; number; default is `0` (no zoom); some documents ignore zooming, in which case a warning is logged and pages are captured at the default resolution
 
 > [!NOTE]  
 > In case of Chrome, if you set `archive` to `none`, the first time you download pages you may see a popup stating that "This site is attempting to download multiple files". You have to allow it, as with this option each page will be downloaded as a separate file.
