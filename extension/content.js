@@ -165,10 +165,25 @@
 
   // ---- Main ----
 
+  // Pages are captured at screen resolution; this is the DPI assumed when sizing PDF pages.
+  const ASSUMED_DPI = 150
+  const POINTS_PER_PIXEL = 72 / ASSUMED_DPI
+
+  async function addPageToPdf(pdf, imageBlob, mimeType) {
+    const bytes = new Uint8Array(await imageBlob.arrayBuffer())
+    const image = mimeType === 'image/png' ? await pdf.embedPng(bytes) : await pdf.embedJpg(bytes)
+    const width = image.width * POINTS_PER_PIXEL
+    const height = image.height * POINTS_PER_PIXEL
+    pdf.addPage([width, height]).drawImage(image, { x: 0, y: 0, width, height })
+  }
+
   async function downloadPages(options) {
     const imageFormat = imageFormatFor(options)
-    const useZip = (options.archive ?? 'zip') === 'zip'
+    const archive = options.archive ?? 'zip'
+    const usePdf = archive === 'pdf'
+    const useZip = archive === 'zip'
     if (useZip && typeof JSZip === 'undefined') throw new Error('JSZip failed to load')
+    if (usePdf && typeof PDFLib === 'undefined') throw new Error('The PDF library failed to load')
 
     await revealAllPagePlaceholders()
 
@@ -182,6 +197,7 @@
     const fromPage = options.fromPage || 1
     const toPage = Math.min(options.toPage || pageCount, pageCount)
     const zip = useZip ? new JSZip() : null
+    const pdf = usePdf ? await PDFLib.PDFDocument.create() : null
 
     for (let pageNo = fromPage; pageNo <= toPage; pageNo++) {
       const pageCanvas = getPageCanvas(pageNo)
@@ -192,8 +208,17 @@
       const imageBlob = await captureAsImageBlob(pageCanvas, imageFormat)
       const imageFilename = imageFilenameFor(pageNo, options, imageFormat)
 
-      if (zip) zip.file(imageFilename, imageBlob, { compression: 'DEFLATE' })
+      if (pdf) await addPageToPdf(pdf, imageBlob, imageFormat.mimeType)
+      else if (zip) zip.file(imageFilename, imageBlob, { compression: 'DEFLATE' })
       else downloadBlob(imageBlob, imageFilename)
+    }
+
+    if (pdf) {
+      setStatus('Saving PDF…')
+      const title = getDocumentTitle() || 'document'
+      pdf.setTitle(title)
+      pdf.setCreator('doc88 Downloader')
+      downloadBlob(new Blob([await pdf.save()], { type: 'application/pdf' }), title + '.pdf')
     }
 
     if (zip) {

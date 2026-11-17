@@ -51,8 +51,9 @@ async function start() {
     showMessage('Open a document on doc88.com first.', true)
     return
   }
+  const options = readOptions()
   try {
-    const response = await chrome.tabs.sendMessage(tab.id, { type: 'start', options: readOptions() })
+    const response = await chrome.tabs.sendMessage(tab.id, { type: 'start', options })
     if (!response?.ok) {
       showMessage(response?.error || 'Could not start.', true)
       return
@@ -66,5 +67,6 @@ async function start() {
 
 for (const id of fields) $(id).addEventListener('change', saveSettings)
 $('format').addEventListener('change', updateQualityVisibility)
+$('archive').addEventListener('change', updateQualityVisibility)
 $('start').addEventListener('click', start)
 loadSettings()

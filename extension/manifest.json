@@ -11,7 +11,7 @@
   "content_scripts": [
     {
       "matches": ["https://www.doc88.com/*", "https://doc88.com/*"],
-      "js": ["jszip.min.js", "content.js"],
+      "js": ["jszip.min.js", "lib/pdf-lib.min.js", "content.js"],
       "run_at": "document_idle"
     }
   ]
