@@ -61,6 +61,15 @@ Possible options are:
 > [!NOTE]  
 > In case of Chrome, if you set `archive` to `none`, the first time you download pages you may see a popup stating that "This site is attempting to download multiple files". You have to allow it, as with this option each page will be downloaded as a separate file.
 
+### Option C: Chrome extension
+
+Prefer a popup to editing code? The [extension](extension) does the same as the bookmark, with a popup for
+choosing the image format (PNG/JPEG), resolution, page range and output: a ZIP of images, separate images, or a
+single PDF. It works in Chrome, Edge, Brave and other Chromium browsers.
+
+To install it: open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked** and select the
+[extension](extension) folder. See its [README](extension/README.md) for usage and troubleshooting.
+
 ## Step 2: Converting images back to a PDF
 
 Under Linux you can easily convert downloaded images back to a PDF.
