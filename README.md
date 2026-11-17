@@ -63,7 +63,12 @@ Possible options are:
 
 ### Option C: Chrome extension
 
-The [extension](extension) does the same as the bookmark, with a popup for choosing the image format, resolution, page range and output (ZIP or separate files). See its [README](extension/README.md) for installation (load it unpacked from `chrome://extensions`).
+Prefer a popup to editing code? The [extension](extension) does the same as the bookmark, with a popup for
+choosing the image format (PNG/JPEG), resolution, page range and output: a ZIP of images, separate images, or a
+single PDF. It works in Chrome, Edge, Brave and other Chromium browsers.
+
+To install it: open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked** and select the
+[extension](extension) folder. See its [README](extension/README.md) for usage and troubleshooting.
 
 ## Step 2: Converting images back to a PDF
 
